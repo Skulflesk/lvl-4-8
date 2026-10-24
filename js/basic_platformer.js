@@ -10,7 +10,7 @@ var player;
 canvas = document.getElementById("canvas");
 context = canvas.getContext("2d");
 
-player = new GameObject({x:300, y:canvas.height/2-100});
+player = new GameObject({x:100, y:canvas.height/2-100});
 
 platform0 = new GameObject();
 platform0.width = canvas.width-300;
@@ -32,7 +32,7 @@ platform2.color = "#66ff33";
 goal = new GameObject({
     width:24,
     height:50,
-    x:700,
+    x:20,
     y:platform0.y-100,
     color:"#00ffff"
 });
@@ -41,6 +41,9 @@ var fX = .85;
 var fY = .97;
 
 var gravity = 1;
+
+// CHANGED: Tracks whether the player has collected the key.
+var hasKey = false;
 
 interval = 1000/60;
 timer = setInterval(animate, interval);
@@ -74,12 +77,6 @@ function animate()
     player.y += Math.round(player.vy);
 
     platform1.x += platform1.vx;
-
-
-	if(player.hitTestObject(platform1))
-    {
-        platform1.y = -1000;
-    }
 
     while(platform0.hitTestPoint(player.bottom()) && player.vy >= 0)
     {
@@ -156,23 +153,28 @@ function animate()
         player.vx = 0;
     }
 
-    while(platform1.hitTestPoint(player.right()) && player.vx >= 0)
-    {
-        player.x--;
-        player.vx = 0;
-    }
+    //---------Objective: Let Me Out!------------------------------------
+    //---------Get the pearl to open the door----------------------------
 
+    
     if(player.hitTestObject(goal))
     {
+        hasKey = true;
         goal.y = 10000;
+    }
+
+    if(hasKey == true)
+    {
+        platform1.y = -1000;
     }
 
     platform0.drawRect();
     platform2.drawRect();
     platform1.drawRect();
+
     player.drawRect();
 
-    //Show hit points
+  
     player.drawDebug();
     goal.drawCircle();
 }
